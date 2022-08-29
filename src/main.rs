@@ -121,7 +121,7 @@ fn setup(
     // spawner
     commands
         .spawn_bundle(PbrBundle {
-            mesh: meshes.add(Mesh::from(shape::Cube { size: 1.0 })),
+            mesh: meshes.add(Mesh::from(shape::Cube { size: 0.1 })),
             material: materials.add(Color::rgb(0.8, 0.7, 0.6).into()),
             transform: Transform::from_xyz(0.0, 2.5, 0.0),
             ..default()
@@ -182,6 +182,7 @@ fn input_axis_val(keyboard_input: &Res<Input<KeyCode>>, pos_key: KeyCode, neg_ke
 
 fn gravity_system(mut query: Query<&mut Velocity>) {
     for mut tf in query.iter_mut() {
+        println!("applied gravity");
         tf.linear = Vec3 {
             y: -9.82,
             ..tf.linear
@@ -214,7 +215,9 @@ fn spawn_timer_system(time: Res<Time>, mut query: Query<(&mut Timer, &mut Spawne
 }
 
 fn spawn_mover_system(time: Res<Time>, mut query: Query<(&mut Transform, With<Spawner>)>) {
-    for (mut tf, _) in query.iter_mut() {}
+    for (mut tf, _) in query.iter_mut() {
+        // TODO: move spawner in some pattern
+    }
 }
 
 fn spawn_system(
@@ -226,6 +229,8 @@ fn spawn_system(
     for (tf, mut spawner) in query.iter_mut() {
         if spawner.queue > 0 {
             spawner.queue -= 1;
+
+            println!("spawned new cube");
 
             commands
                 .spawn_bundle(PbrBundle {
@@ -242,6 +247,7 @@ fn spawn_system(
                         .with_group(GameLayer::Enemies)
                         .with_masks(&[GameLayer::World2, GameLayer::Enemies]),
                 )
+                .insert(Velocity::from_linear(Vec3::Y*-1.0))
                 ;
         }
     }
