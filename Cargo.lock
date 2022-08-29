@@ -485,6 +485,7 @@ name = "bevy_jam_2"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "fastrand",
  "heron",
 ]
 
